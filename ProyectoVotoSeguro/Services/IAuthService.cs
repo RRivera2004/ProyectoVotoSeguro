@@ -1,7 +1,7 @@
 ﻿using ProyectoVotoSeguro.DTOs;
 using ProyectoVotoSeguro.Models;
 
-namespace ProyectoClaseQ4.Services
+namespace ProyectoVotoSeguro.Services
 {
     public interface IAuthService
     {
