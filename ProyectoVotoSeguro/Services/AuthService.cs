@@ -32,13 +32,13 @@ namespace ProyectoVotoSeguro.Services
                 {
                     throw new Exception("User with this email already exists");
                 }
-                
+
                 //2. Generar un ID unico para el usuario
                 var userId = Guid.NewGuid().ToString();
-                
+
                 //3. Hashear la password
                 var passwordHash = BCrypt.Net.BCrypt.HashPassword(registerdto.Password);
-                
+
                 //4. Crear documento de usuario en Firestore
                 var user = new User
                 {
@@ -49,27 +49,27 @@ namespace ProyectoVotoSeguro.Services
                     CreatedAt = DateTime.UtcNow,
                     IsActive = true,
                 };
-                
+
                 var usersCollection = _firebaseService.GetCollection("users");
-                
+
                 // Guardar usuario con el password hasheado
 
                 var userData = new Dictionary<string, object>()
                 {
-                    {"Id", user.Id},
-                    {"Email", user.Email},
-                    {"Fullname", user.Fullname},
-                    {"Role", user.Role},
-                    {"CreatedAt", user.CreatedAt},
-                    {"IsActive", user.IsActive},
-                    {"PasswordHash", passwordHash}
+                    { "Id", user.Id },
+                    { "Email", user.Email },
+                    { "Fullname", user.Fullname },
+                    { "Role", user.Role },
+                    { "CreatedAt", user.CreatedAt },
+                    { "IsActive", user.IsActive },
+                    { "PasswordHash", passwordHash }
                 };
 
                 await usersCollection.Document(user.Id).SetAsync(userData);
-                
+
                 // 5. Generar token JWT
                 var token = GenerateJwtToken(user);
-                
+
                 //6. Retornar respuestas
                 return new AuthResponseDto
                 {
@@ -85,6 +85,19 @@ namespace ProyectoVotoSeguro.Services
             {
                 throw new Exception($"Error al registrar usuario: {ex.Message}");
             }
+        }
+
+        public async Task<AuthResponseDto> Login(LoginDto loginDto)
+            {
+                try
+                {
+                    //1. Obtener usuario de Firebase por correo
+                    var userCollection = _firebaseService.GetCollection("users");
+                }
+                catch (Exception ex)
+                {
+                
+                }
         }
     }
 }
