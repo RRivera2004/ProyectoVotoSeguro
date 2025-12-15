@@ -27,8 +27,8 @@
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Asignar a</mat-label>
       <mat-select formControlName="assignedToUserId">
-        <mat-option *ngFor="let user of users" [value]="user.id">
-          {{ user.fullName }} ({{ user.email }})
+        <mat-option *ngFor="let user of users" [value]="user.Id">
+          {{ user.Fullname }} ({{ user.Email }})
         </mat-option>
       </mat-select>
       <mat-error *ngIf="taskForm.get('assignedToUserId')?.hasError('required')">
