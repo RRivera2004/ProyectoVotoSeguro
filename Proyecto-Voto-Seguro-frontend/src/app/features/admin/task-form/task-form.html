@@ -1,1 +1,72 @@
-<p>task-form works!</p>
+<h2 mat-dialog-title>{{ isEditMode ? 'Editar Tarea' : 'Nueva Tarea' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="taskForm">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Título</mat-label>
+      <input matInput formControlName="title" placeholder="Título de la tarea">
+      <mat-error *ngIf="taskForm.get('title')?.hasError('required')">
+        El título es requerido
+      </mat-error>
+      <mat-error *ngIf="taskForm.get('title')?.hasError('maxlength')">
+        Máximo 200 caracteres
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Descripción</mat-label>
+      <textarea matInput formControlName="description" rows="4" placeholder="Descripción detallada"></textarea>
+      <mat-error *ngIf="taskForm.get('description')?.hasError('required')">
+        La descripción es requerida
+      </mat-error>
+      <mat-error *ngIf="taskForm.get('description')?.hasError('maxlength')">
+        Máximo 1000 caracteres
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Asignar a</mat-label>
+      <mat-select formControlName="assignedToUserId">
+        <mat-option *ngFor="let user of users" [value]="user.id">
+          {{ user.fullName }} ({{ user.email }})
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="taskForm.get('assignedToUserId')?.hasError('required')">
+        Debe asignar la tarea a un usuario
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Prioridad</mat-label>
+      <mat-select formControlName="priority">
+        <mat-option value="low">Baja</mat-option>
+        <mat-option value="medium">Media</mat-option>
+        <mat-option value="high">Alta</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width" *ngIf="isEditMode">
+      <mat-label>Estado</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="pending">Pendiente</mat-option>
+        <mat-option value="in-progress">En Progreso</mat-option>
+        <mat-option value="completed">Completada</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Fecha límite</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="dueDate">
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="loading">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="loading || taskForm.invalid">
+    <span *ngIf="!loading">{{ isEditMode ? 'Actualizar' : 'Crear' }}</span>
+    <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+  </button>
+</mat-dialog-actions>

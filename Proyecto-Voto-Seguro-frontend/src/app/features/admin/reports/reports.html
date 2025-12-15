@@ -1,1 +1,65 @@
-<p>reports works!</p>
+<div class="reports-container">
+  <h1>Reportes y Estadísticas</h1>
+
+  <div *ngIf="loading" class="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading && statistics">
+    <mat-card class="summary-card">
+      <mat-card-header>
+        <mat-card-title>Resumen General</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="summary-grid">
+          <div class="summary-item">
+            <span class="label">Total de Tareas:</span>
+            <span class="value">{{ statistics.totalTasks }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Completadas:</span>
+            <span class="value completed">{{ statistics.completedTasks }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Pendientes:</span>
+            <span class="value pending">{{ statistics.pendingTasks }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Tasa de Completitud:</span>
+            <span class="value">{{ statistics.completionRate }}%</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="charts-grid">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Por Prioridad</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="priority-list">
+            <div *ngFor="let item of statistics.tasksByPriorities" class="priority-item">
+              <span class="priority-label">{{ item.priority }}</span>
+              <span class="priority-count">{{ item.count }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Por Estado</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="status-list">
+            <div *ngFor="let item of statistics.tasksByStatuses" class="status-item">
+              <span class="status-label">{{ item.status }}</span>
+              <span class="status-count">{{ item.count }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

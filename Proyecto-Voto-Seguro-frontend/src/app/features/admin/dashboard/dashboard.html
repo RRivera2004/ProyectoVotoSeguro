@@ -1,1 +1,114 @@
-<p>dashboard works!</p>
+<div class="dashboard-container">
+  <div class="header">
+    <h1>Dashboard - Panel de Administración</h1>
+    <div class="actions">
+      <button mat-raised-button color="primary" routerLink="/admin/tasks">
+        <mat-icon>list</mat-icon>
+        Ver Tareas
+      </button>
+      <button mat-raised-button color="accent" routerLink="/admin/users">
+        <mat-icon>people</mat-icon>
+        Ver Usuarios
+      </button>
+      <button mat-raised-button color="warn" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Cerrar Sesión
+      </button>
+    </div>
+  </div>
+
+  <!-- resto del HTML sin cambios -->
+  <div *ngIf="loading && !statistics" class="loading">
+    <mat-spinner></mat-spinner>
+    <p>Cargando estadísticas...</p>
+  </div>
+
+  <div *ngIf="statistics" class="stats-grid">
+    <mat-card class="stat-card">
+      <mat-card-header>
+        <mat-icon class="stat-icon total">task</mat-icon>
+        <mat-card-title>Total de Tareas</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <h2>{{ statistics.totalTasks }}</h2>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-header>
+        <mat-icon class="stat-icon completed">check_circle</mat-icon>
+        <mat-card-title>Completadas</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <h2>{{ statistics.completedTasks }}</h2>
+        <p>{{ statistics.completionRate }}% completitud</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-header>
+        <mat-icon class="stat-icon pending">pending</mat-icon>
+        <mat-card-title>Pendientes</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <h2>{{ statistics.pendingTasks }}</h2>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-header>
+        <mat-icon class="stat-icon progress">autorenew</mat-icon>
+        <mat-card-title>En Progreso</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <h2>{{ statistics.inProgressTasks }}</h2>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-header>
+        <mat-icon class="stat-icon high">priority_high</mat-icon>
+        <mat-card-title>Alta Prioridad</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <h2>{{ statistics.highPriorityTasks }}</h2>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-header>
+        <mat-icon class="stat-icon overdue">warning</mat-icon>
+        <mat-card-title>Vencidas</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <h2>{{ statistics.overdueTasks }}</h2>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div *ngIf="statistics" class="users-section">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Tareas por Usuario</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngIf="statistics.tasksByUsers.length > 0">
+          <div class="user-list" *ngFor="let userStat of statistics.tasksByUsers">
+            <div class="user-info">
+              <strong>{{ userStat.userName }}</strong>
+              <span>Total: {{ userStat.totalTasks }}</span>
+            </div>
+            <div class="user-progress">
+              <span class="completed">✓ {{ userStat.completedTasks }}</span>
+              <span class="pending">⏱ {{ userStat.pendingTasks }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="statistics.tasksByUsers.length === 0" class="no-data">
+          <p>No hay tareas asignadas aún</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

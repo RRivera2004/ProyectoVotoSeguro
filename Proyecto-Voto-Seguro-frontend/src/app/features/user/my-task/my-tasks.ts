@@ -1,50 +1,51 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { MatTableModule } from '@angular/material/table';
+import { Router } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TaskService } from '../../../core/services/task.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Task } from '../../../shared/models/task.model';
-import { TaskForm } from '../task-form/task-form';
 
 @Component({
-  selector: 'app-task-list',
+  selector: 'app-my-tasks',
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule,
-    MatTableModule,
+    MatCardModule,
     MatButtonModule,
     MatIconModule,
     MatChipsModule,
     MatProgressSpinnerModule,
-    MatDialogModule
+    MatSnackBarModule
   ],
-  templateUrl: './task-list.html',
-  styleUrls: ['./task-list.css']
+  templateUrl: './my-tasks.html',
+  styleUrls: ['./my-tasks.css']
 })
-export class TaskList implements OnInit {
+export class MyTasks implements OnInit {
   tasks: Task[] = [];
   loading = true;
-  displayedColumns: string[] = ['title', 'assignedTo', 'priority', 'status', 'dueDate', 'actions'];
+  currentUser: any;
 
   constructor(
     private taskService: TaskService,
     private authService: AuthService,
-    private dialog: MatDialog,
+    private router: Router,
+    private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef
-  ) {}
-
-  ngOnInit(): void {
-    this.loadTasks();
+  ) {
+    this.currentUser = this.authService.currentUserValue;
   }
 
-  loadTasks(): void {
+  ngOnInit(): void {
+    this.loadMyTasks();
+  }
+
+  loadMyTasks(): void {
     this.loading = true;
     this.taskService.getAllTasks().subscribe({
       next: (data) => {
@@ -60,41 +61,24 @@ export class TaskList implements OnInit {
     });
   }
 
-  openCreateDialog(): void {
-    const dialogRef = this.dialog.open(TaskForm, {
-      width: '600px',
-      data: { task: null }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.loadTasks();
-      }
-    });
-  }
-
-  openEditDialog(task: Task): void {
-    const dialogRef = this.dialog.open(TaskForm, {
-      width: '600px',
-      data: { task }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.loadTasks();
-      }
-    });
-  }
-
-  deleteTask(task: Task): void {
-    if (confirm(`¿Estás seguro de eliminar la tarea "${task.title}"?`)) {
-      this.taskService.deleteTask(task.id).subscribe({
+  completeTask(task: Task): void {
+    if (confirm(`¿Marcar como completada la tarea "${task.title}"?`)) {
+      this.taskService.completeTask(task.id).subscribe({
         next: () => {
-          this.loadTasks();
+          this.snackBar.open('Tarea completada exitosamente', 'Cerrar', {
+            duration: 3000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top'
+          });
+          this.loadMyTasks();
         },
         error: (error) => {
-          console.error('Error al eliminar tarea:', error);
-          alert('Error al eliminar la tarea');
+          console.error('Error al completar tarea:', error);
+          this.snackBar.open('Error al completar la tarea', 'Cerrar', {
+            duration: 3000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top'
+          });
         }
       });
     }
@@ -120,5 +104,18 @@ export class TaskList implements OnInit {
       case 'pending': return 'warn';
       default: return '';
     }
+  }
+
+  getPendingTasks(): Task[] {
+    return this.tasks.filter(t => !t.isCompleted);
+  }
+
+  getCompletedTasks(): Task[] {
+    return this.tasks.filter(t => t.isCompleted);
+  }
+
+  isOverdue(task: Task): boolean {
+    if (!task.dueDate || task.isCompleted) return false;
+    return new Date(task.dueDate) < new Date();
   }
 }
