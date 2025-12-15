@@ -1,0 +1,122 @@
+<div class="my-tasks-container">
+  <div class="header">
+    <div class="user-info">
+      <h1>Mis Tareas</h1>
+      <p>Bienvenido, {{ currentUser?.fullName }}</p>
+    </div>
+    <button mat-raised-button color="warn" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      Cerrar Sesión
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading" class="tasks-content">
+    <!-- Estadísticas rápidas -->
+    <div class="stats-grid">
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <mat-icon class="stat-icon total">task</mat-icon>
+          <h3>{{ tasks.length }}</h3>
+          <p>Total de Tareas</p>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <mat-icon class="stat-icon pending">pending</mat-icon>
+          <h3>{{ getPendingTasks().length }}</h3>
+          <p>Pendientes</p>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <mat-icon class="stat-icon completed">check_circle</mat-icon>
+          <h3>{{ getCompletedTasks().length }}</h3>
+          <p>Completadas</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Tareas Pendientes -->
+    <div class="section">
+      <h2>Tareas Pendientes</h2>
+      <div class="tasks-grid">
+        <mat-card *ngFor="let task of getPendingTasks()" class="task-card" [class.overdue]="isOverdue(task)">
+          <mat-card-header>
+            <mat-card-title>{{ task.title }}</mat-card-title>
+            <div class="task-badges">
+              <mat-chip [color]="getPriorityColor(task.priority)" selected>
+                {{ task.priority }}
+              </mat-chip>
+              <mat-chip [color]="getStatusColor(task.status)" selected>
+                {{ task.status }}
+              </mat-chip>
+            </div>
+          </mat-card-header>
+
+          <mat-card-content>
+            <p class="description">{{ task.description }}</p>
+
+            <div class="task-meta">
+              <div class="meta-item" *ngIf="task.dueDate">
+                <mat-icon>event</mat-icon>
+                <span>{{ task.dueDate | date:'short' }}</span>
+                <span *ngIf="isOverdue(task)" class="overdue-badge">VENCIDA</span>
+              </div>
+              <div class="meta-item">
+                <mat-icon>person</mat-icon>
+                <span>Asignado por: {{ task.createdByUserName }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+
+          <mat-card-actions>
+            <button mat-raised-button color="primary" (click)="completeTask(task)">
+              <mat-icon>check</mat-icon>
+              Completar
+            </button>
+          </mat-card-actions>
+        </mat-card>
+
+        <div *ngIf="getPendingTasks().length === 0" class="no-tasks">
+          <mat-icon>check_circle_outline</mat-icon>
+          <p>No tienes tareas pendientes</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tareas Completadas -->
+    <div class="section">
+      <h2>Tareas Completadas</h2>
+      <div class="tasks-grid">
+        <mat-card *ngFor="let task of getCompletedTasks()" class="task-card completed">
+          <mat-card-header>
+            <mat-card-title>{{ task.title }}</mat-card-title>
+            <mat-icon class="completed-icon">check_circle</mat-icon>
+          </mat-card-header>
+
+          <mat-card-content>
+            <p class="description">{{ task.description }}</p>
+
+            <div class="task-meta">
+              <div class="meta-item" *ngIf="task.completedAt">
+                <mat-icon>event_available</mat-icon>
+                <span>Completada: {{ task.completedAt | date:'short' }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <div *ngIf="getCompletedTasks().length === 0" class="no-tasks">
+          <mat-icon>inbox</mat-icon>
+          <p>No has completado tareas aún</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

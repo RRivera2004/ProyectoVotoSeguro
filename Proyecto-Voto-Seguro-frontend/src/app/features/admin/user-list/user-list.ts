@@ -1,11 +1,57 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatTableModule } from '@angular/material/table';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonModule } from '@angular/material/button';
+import { UserService } from '../../../core/services/user.service';
+import { User } from '../../../shared/models/user.model';
 
 @Component({
   selector: 'app-user-list',
-  imports: [],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatChipsModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatButtonModule
+  ],
   templateUrl: './user-list.html',
-  styleUrl: './user-list.css',
+  styleUrls: ['./user-list.css']
 })
-export class UserList {
+export class UserList implements OnInit {
+  users: User[] = [];
+  loading = true;
+  displayedColumns: string[] = ['fullName', 'email', 'role', 'status', 'createdAt'];
 
+  constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
+    this.loadUsers();
+  }
+
+  loadUsers(): void {
+    this.loading = true;
+    this.userService.getAllUsers().subscribe({
+      next: (data) => {
+        this.users = data;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar usuarios:', error);
+        this.loading = false;
+      }
+    });
+  }
+
+  getRoleColor(role: string): string {
+    return role === 'admin' ? 'warn' : 'primary';
+  }
+
+  getStatusColor(isActive: boolean): string {
+    return isActive ? 'primary' : 'warn';
+  }
 }
