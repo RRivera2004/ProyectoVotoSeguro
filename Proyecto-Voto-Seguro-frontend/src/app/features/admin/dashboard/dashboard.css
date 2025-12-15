@@ -121,3 +121,30 @@
   color: #FF9800;
   font-weight: 500;
 }
+
+.error-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 20px;
+  color: #f44336;
+}
+
+.error-message mat-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+}
+
+.error-message p {
+  font-size: 18px;
+  margin: 0;
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: #999;
+}

@@ -1,18 +1,26 @@
 <div class="task-list-container">
   <div class="header">
     <h1>Gestión de Tareas</h1>
-    <button mat-raised-button color="primary" (click)="openCreateDialog()">
-      <mat-icon>add</mat-icon>
-      Nueva Tarea
-    </button>
+    <div class="actions">
+      <button mat-raised-button color="primary" (click)="openCreateDialog()">
+        <mat-icon>add</mat-icon>
+        Nueva Tarea
+      </button>
+      <button mat-raised-button color="warn" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Cerrar Sesión
+      </button>
+    </div>
   </div>
 
-  <div *ngIf="loading" class="loading">
+  <!-- resto del HTML sin cambios -->
+  <div *ngIf="loading && tasks.length === 0" class="loading">
     <mat-spinner></mat-spinner>
+    <p>Cargando tareas...</p>
   </div>
 
-  <div *ngIf="!loading" class="table-container">
-    <table mat-table [dataSource]="tasks" class="tasks-table">
+  <div *ngIf="!loading || tasks.length > 0" class="table-container">
+    <table mat-table [dataSource]="tasks" class="tasks-table" *ngIf="tasks.length > 0">
       <ng-container matColumnDef="title">
         <th mat-header-cell *matHeaderCellDef>Título</th>
         <td mat-cell *matCellDef="let task">
@@ -68,9 +76,13 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
-    <div *ngIf="tasks.length === 0" class="no-data">
+    <div *ngIf="tasks.length === 0 && !loading" class="no-data">
       <mat-icon>inbox</mat-icon>
       <p>No hay tareas registradas</p>
+      <button mat-raised-button color="primary" (click)="openCreateDialog()">
+        <mat-icon>add</mat-icon>
+        Crear primera tarea
+      </button>
     </div>
   </div>
 </div>

@@ -67,7 +67,7 @@ export class AuthService {
 
   getUserRole(): string | null {
     const user = this.currentUserValue;
-    return user ? user.role : null;
+    return user ? user.Role : null;
   }
 
   isAdmin(): boolean {
@@ -88,12 +88,12 @@ export class AuthService {
     try {
       const decoded: any = jwtDecode(token);
       return {
-        id: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'],
-        email: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'],
-        fullName: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'],
-        role: decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'],
-        createdAt: new Date(),
-        isActive: true
+        Id: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'],
+        Email: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'],
+        Fullname: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'],
+        Role: decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'],
+        CreatedAt: new Date(),
+        IsActive: true
       };
     } catch {
       return null;

@@ -10,14 +10,20 @@
         <mat-icon>people</mat-icon>
         Ver Usuarios
       </button>
+      <button mat-raised-button color="warn" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Cerrar Sesión
+      </button>
     </div>
   </div>
 
-  <div *ngIf="loading" class="loading">
+  <!-- resto del HTML sin cambios -->
+  <div *ngIf="loading && !statistics" class="loading">
     <mat-spinner></mat-spinner>
+    <p>Cargando estadísticas...</p>
   </div>
 
-  <div *ngIf="!loading && statistics" class="stats-grid">
+  <div *ngIf="statistics" class="stats-grid">
     <mat-card class="stat-card">
       <mat-card-header>
         <mat-icon class="stat-icon total">task</mat-icon>
@@ -80,21 +86,27 @@
     </mat-card>
   </div>
 
-  <div *ngIf="!loading && statistics" class="users-section">
+  <div *ngIf="statistics" class="users-section">
     <mat-card>
       <mat-card-header>
         <mat-card-title>Tareas por Usuario</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <div class="user-list" *ngFor="let userStat of statistics.tasksByUsers">
-          <div class="user-info">
-            <strong>{{ userStat.userName }}</strong>
-            <span>Total: {{ userStat.totalTasks }}</span>
+        <div *ngIf="statistics.tasksByUsers.length > 0">
+          <div class="user-list" *ngFor="let userStat of statistics.tasksByUsers">
+            <div class="user-info">
+              <strong>{{ userStat.userName }}</strong>
+              <span>Total: {{ userStat.totalTasks }}</span>
+            </div>
+            <div class="user-progress">
+              <span class="completed">✓ {{ userStat.completedTasks }}</span>
+              <span class="pending">⏱ {{ userStat.pendingTasks }}</span>
+            </div>
           </div>
-          <div class="user-progress">
-            <span class="completed">✓ {{ userStat.completedTasks }}</span>
-            <span class="pending">⏱ {{ userStat.pendingTasks }}</span>
-          </div>
+        </div>
+
+        <div *ngIf="statistics.tasksByUsers.length === 0" class="no-data">
+          <p>No hay tareas asignadas aún</p>
         </div>
       </mat-card-content>
     </mat-card>

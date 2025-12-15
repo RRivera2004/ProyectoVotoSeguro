@@ -1,24 +1,24 @@
-export interface User{
-  id:string;
-  email:string;
-  fullName:string;
-  role:string;
-  createdAt:Date;
-  isActive:boolean;
+export interface User {
+  Id: string;
+  Email: string;
+  Fullname: string;
+  Role: string;
+  CreatedAt: Date;
+  IsActive: boolean;
 }
 
-export interface RegisterDto{
+export interface RegisterDto {
   email: string;
   password: string;
   fullName: string;
 }
 
-export interface LoginDto{
+export interface LoginDto {
   email: string;
   password: string;
 }
 
-export interface AuthResponse{
+export interface AuthResponse {
   token: string;
   userId: string;
   email: string;

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
@@ -8,6 +8,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TaskService } from '../../../core/services/task.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { Task } from '../../../shared/models/task.model';
 import { TaskForm } from '../task-form/task-form';
 
@@ -34,7 +35,9 @@ export class TaskList implements OnInit {
 
   constructor(
     private taskService: TaskService,
-    private dialog: MatDialog
+    private authService: AuthService,
+    private dialog: MatDialog,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -47,10 +50,12 @@ export class TaskList implements OnInit {
       next: (data) => {
         this.tasks = data;
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error('Error al cargar tareas:', error);
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -93,6 +98,10 @@ export class TaskList implements OnInit {
         }
       });
     }
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 
   getPriorityColor(priority: string): string {

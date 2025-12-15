@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -35,7 +35,8 @@ export class MyTasks implements OnInit {
     private taskService: TaskService,
     private authService: AuthService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef
   ) {
     this.currentUser = this.authService.currentUserValue;
   }
@@ -50,10 +51,12 @@ export class MyTasks implements OnInit {
       next: (data) => {
         this.tasks = data;
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error('Error al cargar tareas:', error);
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }

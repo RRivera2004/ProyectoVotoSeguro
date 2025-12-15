@@ -2,7 +2,7 @@
   <div class="header">
     <div class="user-info">
       <h1>Mis Tareas</h1>
-      <p>Bienvenido, {{ currentUser?.fullName }}</p>
+      <p>Bienvenido, {{ currentUser?.Fullname }}</p>
     </div>
     <button mat-raised-button color="warn" (click)="logout()">
       <mat-icon>logout</mat-icon>
@@ -10,11 +10,12 @@
     </button>
   </div>
 
-  <div *ngIf="loading" class="loading">
+  <div *ngIf="loading && tasks.length === 0" class="loading">
     <mat-spinner></mat-spinner>
+    <p>Cargando tareas...</p>
   </div>
 
-  <div *ngIf="!loading" class="tasks-content">
+  <div *ngIf="!loading || tasks.length > 0" class="tasks-content">
     <!-- Estadísticas rápidas -->
     <div class="stats-grid">
       <mat-card class="stat-card">
