@@ -67,8 +67,8 @@ export class TaskForm implements OnInit {
   loadUsers(): void {
     this.userService.getUsersByRole('user').subscribe({
       next: (data) => {
+        console.log('Usuarios cargados:', data);
         this.users = data;
-        // Forzar detección de cambios después de actualizar usuarios
         this.cdr.markForCheck();
       },
       error: (error) => {
@@ -85,7 +85,6 @@ export class TaskForm implements OnInit {
     this.loading = true;
 
     if (this.isEditMode && this.data.task) {
-      // Actualizar tarea existente
       this.taskService.updateTask(this.data.task.id, this.taskForm.value).subscribe({
         next: () => {
           this.loading = false;
@@ -98,7 +97,6 @@ export class TaskForm implements OnInit {
         }
       });
     } else {
-      // Crear nueva tarea
       this.taskService.createTask(this.taskForm.value).subscribe({
         next: () => {
           this.loading = false;
